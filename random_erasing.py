@@ -38,8 +38,8 @@ class RandomErasingTransform:
                 return Image.fromarray(a)
 
 
+if __name__ == "__main__":
+    testset = torchvision.datasets.CIFAR10(root='./data', train=False)
+    img = testset[1][0]
 
-testset = torchvision.datasets.CIFAR10(root='./data', train=False)
-img = testset[1][0]
-
-RandomErasingTransform()(img).resize((256,256), resample=Image.NEAREST).show()
+    RandomErasingTransform()(img).resize((256,256), resample=Image.NEAREST).show()
