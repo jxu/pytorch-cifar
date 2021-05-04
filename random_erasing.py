@@ -6,13 +6,21 @@ from PIL import Image
 import numpy as np
 import random
 
+
+
 class RandomErasingTransform:
-    """Implement Random Erasing (Zhong et al 2017) or my variations"""
+    """Implement Random Erasing (Zhong et al 2017) or my variations
+
+    default mode: "rectangle", other modes "ellipse"
+    """
+
 
     def __init__(self,
+                 mode,
                  erase_prob=0.5,
                  erase_area_min=0.02, erase_area_max=0.4,
                  erase_aspect_min=0.3, erase_aspect_max=10/3):
+        self.mode = mode
         self.erase_prob = erase_prob
         self.erase_area_min, self.erase_area_max = erase_area_min, erase_area_max
         self.erase_aspect_min, self.erase_aspect_max = erase_aspect_min, erase_aspect_max
@@ -23,6 +31,8 @@ class RandomErasingTransform:
 
         img_w, img_h = img.size
         img_area = img_w * img_h
+        if self.mode == "ellipse":
+            img_area *= 4 / np.pi
         
         while True:
             erase_area = img_area * np.random.uniform(self.erase_area_min, self.erase_area_max)
@@ -34,7 +44,21 @@ class RandomErasingTransform:
             if e_x + e_w <= img_w and e_y + e_h <= img_h:
                 # modify pixels as np array (img_w, img_h, 3)
                 a = np.array(img)
-                a[e_y:e_y+e_h, e_x:e_x+e_w, :] = np.random.randint(0, 256, size=(e_h,e_w,3), dtype=np.uint8)
+
+                if self.mode == "rectangle":
+                    a[e_y:e_y+e_h, e_x:e_x+e_w, :] = np.random.randint(0, 256, size=(e_h,e_w,3), dtype=np.uint8)
+
+                elif self.mode == "ellipse":
+                    cx, cy = e_x + (e_w-1)/2, e_y + (e_h-1)/2
+
+                    for y in range(e_y, e_y+e_h):
+                        for x in range(e_x, e_x+e_w):
+                            if (x-cx)**2 / (e_w/2)**2 + (y-cy)**2 / (e_h/2)**2 <= 1:
+                                a[y,x,:] = np.random.randint(0, 256, size=3, dtype=np.uint8)
+
+                else:
+                    raise NotImplementedError
+
                 return Image.fromarray(a)
 
 
@@ -42,4 +66,5 @@ if __name__ == "__main__":
     testset = torchvision.datasets.CIFAR10(root='./data', train=False)
     img = testset[1][0]
 
-    RandomErasingTransform()(img).resize((256,256), resample=Image.NEAREST).show()
+    RandomErasingTransform(mode="ellipse", erase_prob=1)(img)\
+        .resize((256,256), resample=Image.NEAREST).show()
