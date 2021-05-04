@@ -722,11 +722,6 @@ Epoch: 171
 Saving..
 
 Epoch: 172
-^Z=========================== 193/391 .............................]  Step: 88ms | Tot: 17s124ms | Loss: 0.003 | Acc: 99.972% (24697/24704)                           
-[1]+  Stopped                 python3 main.py
-(pytorch_latest_p37) ubuntu@ip-172-31-25-219:~/pytorch-cifar$ vim main.py 
-(pytorch_latest_p37) ubuntu@ip-172-31-25-219:~/pytorch-cifar$ fg
-python3 main.py
  [=========================== 391/391 ============================>]  Step: 59ms | Tot: 1m3s | Loss: 0.003 | Acc: 99.962% (49981/50000)                               
  [=========================== 100/100 ============================>]  Step: 22ms | Tot: 2s204ms | Loss: 0.187 | Acc: 95.050% (9505/10000)                             
 
