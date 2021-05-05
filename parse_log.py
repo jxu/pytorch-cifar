@@ -3,8 +3,8 @@
 import sys
 import re
 
-#logfile = sys.argv[1]
-logfile = "res18_baseline.log"
+logfile = sys.argv[1]
+
 
 def parse_line(line):
     p = re.compile(r"Loss: (.+) \| Acc: (.+)%")
@@ -22,6 +22,6 @@ assert len(lines) == 400
 print("epoch,train_loss,train_acc,test_loss,test_acc")
 
 for i in range(200):
-    train_loss, train_acc = parse_line(lines[i])
-    test_loss, test_acc = parse_line(lines[i+1])
+    train_loss, train_acc = parse_line(lines[2*i])
+    test_loss, test_acc = parse_line(lines[2*i+1])
     print(f"{i},{train_loss},{train_acc},{test_loss},{test_acc}")
