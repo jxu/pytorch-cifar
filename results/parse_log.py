@@ -19,9 +19,13 @@ with open(logfile) as f:
 lines = [l.strip() for l in rawlines if "Loss" in l]
 assert len(lines) == 400
 
-print("epoch,train_loss,train_acc,test_loss,test_acc")
+outfile = logfile.replace(".log", ".csv")
 
-for i in range(200):
-    train_loss, train_acc = parse_line(lines[2*i])
-    test_loss, test_acc = parse_line(lines[2*i+1])
-    print(f"{i},{train_loss},{train_acc},{test_loss},{test_acc}")
+with open(outfile, 'w') as f:
+    f.write("epoch,train_loss,train_acc,test_loss,test_acc\n")
+
+
+    for i in range(200):
+        train_loss, train_acc = parse_line(lines[2*i])
+        test_loss, test_acc = parse_line(lines[2*i+1])
+        f.write(f"{i},{train_loss},{train_acc},{test_loss},{test_acc}\n")
